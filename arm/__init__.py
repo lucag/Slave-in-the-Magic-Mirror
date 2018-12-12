@@ -8,4 +8,4 @@
 # Licensed under GPL Version 2 or later
 #
 
-import cpu, memory, options, bitops
+from . import cpu, memory, options, bitops

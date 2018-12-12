@@ -5,3 +5,9 @@
 # Python
 __pycache__/
 *.py[cod]
+
+.idea/
+*.iml
+
+*.bak
+

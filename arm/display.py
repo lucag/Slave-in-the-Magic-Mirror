@@ -9,7 +9,7 @@
 #
 
 def log(content):
-	print content
+	print(content)
 
 def wipe():
 	pass

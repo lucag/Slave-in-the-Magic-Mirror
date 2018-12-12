@@ -107,8 +107,8 @@ class FairPlaySAP(object):
 if __name__ == "__main__":
     fp = FairPlaySAP()
 
-    print
-    print "Stage 0"
-    print
+    print()
+    print("Stage 0")
+    print()
     r0 = fp.challenge(2, "46504c590201010000000004020001bb".decode("hex"), 0)
-    print r0.encode("hex")
+    print(r0.encode("hex"))

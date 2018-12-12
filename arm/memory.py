@@ -88,9 +88,9 @@ class VirtualMemory(object):
     def map(self, addr, size, region):
         assert addr % self.page_size == 0
         assert size % self.page_size == 0
-        for p in xrange(addr // self.page_size, (addr + size) // self.page_size):
+        for p in range(addr // self.page_size, (addr + size) // self.page_size):
             assert self.page_map[p] is None
-        for i in xrange(size // self.page_size):
+        for i in range(size // self.page_size):
             p = addr // self.page_size + i
             self.page_map[p] = (region, i * self.page_size)
 

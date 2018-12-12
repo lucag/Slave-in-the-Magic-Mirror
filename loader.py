@@ -177,7 +177,7 @@ class IOSProcessNative(object):
     def dummy_func(self, name):
         if name in self.dummy_funcs: return self.dummy_funcs[name]
         def func():
-            print "no hle for %s!" % name
+            print("no hle for %s!" % name)
             sys.exit(1)
         self.dummy_funcs[name] = ctypes.CFUNCTYPE(ctypes.c_int)(func)
         return self.dummy_funcs[name]
@@ -196,7 +196,7 @@ class IOSProcessNative(object):
 
     def copyin(self, addr, data):
         carr = (ctypes.c_ubyte * len(data)).from_address(addr)
-        carr[:] = map(ord, data)
+        carr[:] = list(map(ord, data))
 
     def copyout(self, addr, length):
         carr = (ctypes.c_ubyte * length).from_address(addr)
@@ -307,7 +307,7 @@ class IOSProcessEmu(object):
 
     def copyout(self, addr, length):
         r = ""
-        for i in xrange(length):
+        for i in range(length):
             r += chr(self.cpu.ld_byte(addr+i))
         return r
 
@@ -326,7 +326,7 @@ class IOSProcessEmu(object):
         nargs = len(inspect.getargspec(f).args)-1
         def f2(self, cpu):
             args = cpu.regs[:min(4, nargs)]
-            for i in xrange(nargs-4):
+            for i in range(nargs-4):
                 args.append(cpu.ld_word(cpu.regs[13]+i*4))
             r = f(self, *args)
             if r is None:
@@ -357,12 +357,12 @@ class IOSProcessEmu(object):
 
     @make_hle
     def hle_memcpy(self, dst, src, size):
-        for i in xrange(size):
+        for i in range(size):
             self.cpu.st_byte(dst+i, self.cpu.ld_byte(src+i))
 
     @make_hle
     def hle_memset(self, dst, c, length):
-        for i in xrange(length):
+        for i in range(length):
             self.cpu.st_byte(dst+i, c)
 
     @make_hle

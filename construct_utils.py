@@ -15,11 +15,11 @@ class Bork(Construct):
         Construct.__init__(self, None)
         self.msg = msg
     def _parse(self, stream, context):
-        raise Exception, self.msg
+        raise Exception(self.msg)
     def _build(self, obj, stream, context):
-        raise Exception, self.msg
+        raise Exception(self.msg)
     def _sizeof(self, context):
-        raise Exception, self.msg
+        raise Exception(self.msg)
 
 
 class ParseOnly(Subconstruct):
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     )
 
     tss = "abc\x01ed"
-    print ts.parse(tss)
+    print(ts.parse(tss))
 
     tc = Container(
         a = 97,
@@ -215,4 +215,4 @@ if __name__ == "__main__":
             c = 99,
             e = 101,
             d = 100))
-    print `ts.build(tc)`
+    print(repr(ts.build(tc)))

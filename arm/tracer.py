@@ -12,7 +12,7 @@ def reset():
 	pass
 
 def log(name, inst):
-	print hex(inst), name
+	print(hex(inst), name)
 
 def dump():
 	pass

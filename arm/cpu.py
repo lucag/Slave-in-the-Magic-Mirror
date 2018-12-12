@@ -8,10 +8,10 @@
 # Licensed under GPL Version 2 or later
 #
 
-import bitops
-import display
-import logger, tracer
-from utils import *
+from . import bitops
+from . import display
+from . import logger, tracer
+from .utils import *
 
 
 class PSR(object):
@@ -228,7 +228,7 @@ class ARMv7CPU(object):
         sp = self.regs[13]
         display.wipe()
         display.log("Stack values:")
-        for i in xrange(0, 50):
+        for i in range(0, 50):
             addr = sp + i*4
             val = self.ld_word(addr)
             display.log("\t" + toStringHex32(addr) + ":\t" + toStringHex32(val) + "(" + str(val) + ")")
@@ -253,39 +253,39 @@ class ARMv7CPU(object):
     def output_banked_regs(self, target):
         indent = "                                                                      "
         msg = "USR: "
-        for i in xrange(0, 7+1):
+        for i in range(0, 7+1):
             msg += "[ " + str(i) + "]=" + toStringHex32(self.regs_usr[i]) + " "
         target.log(msg)
         msg = "     "
-        for i in xrange(8, 9+1):
+        for i in range(8, 9+1):
             msg += "[ " + str(i) + "]=" + toStringHex32(self.regs_usr[i]) + " "
-        for i in xrange(10, 15+1):
+        for i in range(10, 15+1):
             msg += "[" + str(i) + "]=" + toStringHex32(self.regs_usr[i]) + " "
         target.log(msg)
         msg = "SVC: " + indent
-        for i in xrange(13, 14+1):
+        for i in range(13, 14+1):
             msg += "[" + str(i) + "]=" + toStringHex32(self.regs_svc[i]) + " "
         target.log(msg)
         msg = "MON: " + indent
-        for i in xrange(13, 14+1):
+        for i in range(13, 14+1):
             msg += "[" + str(i) + "]=" + toStringHex32(self.regs_mon[i]) + " "
         target.log(msg)
         msg = "ABT: " + indent
-        for i in xrange(13, 14+1):
+        for i in range(13, 14+1):
             msg += "[" + str(i) + "]=" + toStringHex32(self.regs_abt[i]) + " "
         target.log(msg)
         msg = "UND: " + indent
-        for i in xrange(13, 14+1):
+        for i in range(13, 14+1):
             msg += "[" + str(i) + "]=" + toStringHex32(self.regs_und[i]) + " "
         target.log(msg)
         msg = "IRQ: " + indent
-        for i in xrange(13, 14+1):
+        for i in range(13, 14+1):
             msg += "[" + str(i) + "]=" + toStringHex32(self.regs_irq[i]) + " "
         target.log(msg)
         msg = "FIQ: "
-        for i in xrange(8, 9+1):
+        for i in range(8, 9+1):
             msg += "[ " + str(i) + "]=" + toStringHex32(self.regs_fiq[i]) + " "
-        for i in xrange(10, 14+1):
+        for i in range(10, 14+1):
             msg += "[" + str(i) + "]=" + toStringHex32(self.regs_fiq[i]) + " "
         target.log(msg)
     
@@ -365,16 +365,16 @@ class ARMv7CPU(object):
         indent = "     "
         msg = indent
         if (oldregs == None):
-            for i in xrange(0, 8):
+            for i in range(0, 8):
                 msg += "[ " + str(i) + "]=" + toStringHex32(self.regs[i]) + " "
             target.log(msg)
             msg = indent
-            for i in xrange(8, 16):
+            for i in range(8, 16):
                 msg += "[" + (" " if i < 10 else "") + str(i) + "]=" + toStringHex32(self.regs[i]) + " "
             target.log(msg)
         else:
             changed = False
-            for i in xrange(0, 8):
+            for i in range(0, 8):
                 if (self.regs[i] == oldregs[i]):
                     #     " [10]=60000093"
                     msg += "              "
@@ -388,7 +388,7 @@ class ARMv7CPU(object):
 
             changed = False
             msg = indent
-            for i in xrange(8, 15): # PC will change every execution, so don't show it
+            for i in range(8, 15): # PC will change every execution, so don't show it
                 if (self.regs[i] == oldregs[i]):
                     #     " [10]=60000093"
                     msg += "              "
@@ -734,7 +734,7 @@ class ARMv7CPU(object):
     
 
     def store_regs(self, regs):
-        for i in xrange(0, 16):
+        for i in range(0, 16):
             regs[i] = self.regs[i]
     
 
@@ -1137,7 +1137,7 @@ class ARMv7CPU(object):
                 val = 0
                 mmu = self.mmu
                 memctlr = self.memctlr
-                for i in xrange(0, 4):
+                for i in range(0, 4):
                     phyaddr = mmu.trans_to_phyaddr(addr + i)
                     val = bitops.set_bits(val, 8*i+7, 8*i, memctlr.ld_byte(phyaddr))
                 
@@ -1159,7 +1159,7 @@ class ARMv7CPU(object):
             else:
                 mmu = self.mmu
                 memctlr = self.memctlr
-                for i in xrange(0, 4):
+                for i in range(0, 4):
                     phyaddr = mmu.trans_to_phyaddr(addr + i)
                     memctlr.st_byte(phyaddr, bitops.get_bits(word, 8*i+7, 8*i))
                 
@@ -1178,7 +1178,7 @@ class ARMv7CPU(object):
                 val = 0
                 mmu = self.mmu
                 memctlr = self.memctlr
-                for i in xrange(0, 2):
+                for i in range(0, 2):
                     phyaddr = mmu.trans_to_phyaddr(addr + i)
                     val = bitops.set_bits(val, 8*i+7, 8*i, memctlr.ld_byte(phyaddr))
                 
@@ -1197,7 +1197,7 @@ class ARMv7CPU(object):
             else:
                 mmu = self.mmu
                 memctlr = self.memctlr
-                for i in xrange(0, 2):
+                for i in range(0, 2):
                     phyaddr = mmu.trans_to_phyaddr(addr + i)
                     memctlr.st_byte(phyaddr, bitops.get_bits(hw, 8*i+7, 8*i))
                 
@@ -3755,7 +3755,7 @@ class ARMv7CPU(object):
         valn = self.reg(n)
         address = valn
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.regs[i] = self.ld_word(address)
@@ -3796,7 +3796,7 @@ class ARMv7CPU(object):
         if (is_wordhigher):
             address += 4
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.regs[i] = self.ld_word(address)
@@ -3833,7 +3833,7 @@ class ARMv7CPU(object):
             address += 4
         reglist = []
         self.log_regs(None)
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 # FIXME
@@ -3861,7 +3861,7 @@ class ARMv7CPU(object):
 
         address = (self.reg(n) - 4 * n_registers + 4) & 0xffffffff
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.regs[i] = self.ld_word(address)
@@ -3887,7 +3887,7 @@ class ARMv7CPU(object):
 
         address = (self.reg(n) - 4 * n_registers) & 0xffffffff
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.regs[i] = self.ld_word(address)
@@ -3913,7 +3913,7 @@ class ARMv7CPU(object):
 
         address = (self.reg(n) + 4) & 0xffffffff
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.regs[i] = self.ld_word(address)
@@ -3940,7 +3940,7 @@ class ARMv7CPU(object):
         self.log_regs(None)
         address = self.reg(n)
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.st_word(address, self.regs[i])
@@ -3971,7 +3971,7 @@ class ARMv7CPU(object):
         self.log_regs(None)
         address = (valn - 4 * n_registers) & 0xffffffff
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.st_word(address, self.regs[i])
@@ -4000,7 +4000,7 @@ class ARMv7CPU(object):
         self.log_regs(None)
         address = (valn + 4) & 0xffffffff
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 self.st_word(address, self.regs[i])
@@ -4036,7 +4036,7 @@ class ARMv7CPU(object):
         if (is_wordhigher):
             address += 4
         reglist = []
-        for i in xrange(0, 15):
+        for i in range(0, 15):
             if ((register_list >> i) & 1):
                 reglist.append(i)
                 # XXX

@@ -9,7 +9,7 @@
 #
 
 import time
-import bitops
+from . import bitops
 
 def assert1(cond, val=None):
     if (not cond):
@@ -35,7 +35,7 @@ def toStringBinInst(inst):
     ret = ""
     b = bin(inst)[2:]
     b = b.rjust(32, "0")
-    for i in xrange(32):
+    for i in range(32):
         ret += b[i]
         if ((i + 1) % 4 == 0 and i != 31):
             ret += " "
@@ -76,7 +76,7 @@ def toStringInst(inst):
 
 def toStringAscii(uint):
     ret = ""
-    for i in xrange(0, 32, 8):
+    for i in range(0, 32, 8):
         b = bitops.get_bits(uint, 32-1 - i, 32-1 - i - 7)
         if (b >= 32 and b <= 126):
             ret += chr(b)

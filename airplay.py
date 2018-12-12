@@ -15,9 +15,9 @@ import socket
 import struct
 import threading
 import subprocess
-import SocketServer
+import socketserver
 from collections import defaultdict, namedtuple
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 import biplist
 import zeroconf
@@ -84,7 +84,7 @@ class AirPlayMirroringVideoStream(object):
             elif type_ == 2: # heartbeat
                 pass
             else:
-                print "wtf", size, type_, unkn, timestamp
+                print("wtf", size, type_, unkn, timestamp)
 
         self.is_shutdown.set()
 
@@ -107,7 +107,7 @@ class AirPlayMirroringVideoStream(object):
         assert i == len(s)
 
 
-class ThreadedHTTPServer(SocketServer.ThreadingMixIn, HTTPServer):
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
 
 
@@ -138,11 +138,11 @@ class AirPlayMirroringHTTPHandler(BaseHTTPRequestHandler):
                              (self.protocol_version, code, message))
 
     def setup(self):
-        print "Initialising FairPlay SAP..."
+        print("Initialising FairPlay SAP...")
         st = time.clock()
         self.sap = drm.FairPlaySAP(self.server.parent.airtunesd_filename)
         et = time.clock()
-        print "Done! Took %.2f seconds." % (et-st)
+        print("Done! Took %.2f seconds." % (et-st))
 
         self.sap_stage = 0
 
@@ -187,11 +187,11 @@ class AirPlayMirroringHTTPHandler(BaseHTTPRequestHandler):
             chal_data = self.rfile.read(int(self.headers["Content-Length"]))
             # print "chal", `chal_data`
 
-            print "Calculating AirPlay challenge stage %d..." % self.sap_stage
+            print("Calculating AirPlay challenge stage %d..." % self.sap_stage)
             st = time.clock()
             response = self.sap.challenge(3, chal_data, self.sap_stage)
             et = time.clock()
-            print "Done! Took %.2f seconds." % (et-st)
+            print("Done! Took %.2f seconds." % (et-st))
             self.sap_stage += 1
             # print "resp", `response`
 
@@ -217,11 +217,11 @@ class AirPlayMirroringHTTPHandler(BaseHTTPRequestHandler):
 
             iv = bplist['param2']
 
-            print "Decrypting AirPlay key..."
+            print("Decrypting AirPlay key...")
             st = time.clock()
             key = self.sap.decrypt_key(bplist['param1'])
             et = time.clock()
-            print "Done! Took %.2f seconds. AirPlay key: %s" % (et-st, key.encode("hex"))
+            print("Done! Took %.2f seconds. AirPlay key: %s" % (et-st, key.encode("hex")))
 
             con.handle_mirroring_video_stream(self.rfile, key, iv)
             self.close_connection = 1
@@ -230,7 +230,7 @@ class AirPlayMirroringHTTPHandler(BaseHTTPRequestHandler):
             self.send_error(404)
 
 
-class AirTunesRTPDataHandler(SocketServer.BaseRequestHandler):
+class AirTunesRTPDataHandler(socketserver.BaseRequestHandler):
     def handle(self):
         # print "RTP Data"
 
@@ -264,7 +264,7 @@ class AirTunesRTPDataHandler(SocketServer.BaseRequestHandler):
 
 
 
-class AirTunesRTPControlHandler(SocketServer.BaseRequestHandler):
+class AirTunesRTPControlHandler(socketserver.BaseRequestHandler):
     def handle(self):
         # print "RTP Control", self.request
 
@@ -301,12 +301,12 @@ class AirTunesRTPControlHandler(SocketServer.BaseRequestHandler):
 
 
 
-class AirTunesRTPTimingHandler(SocketServer.BaseRequestHandler):
+class AirTunesRTPTimingHandler(socketserver.BaseRequestHandler):
     def handle(self):
         pass
         # print "RTP Timing", self.request
 
-class AirTunesRTPEventHandler(SocketServer.StreamRequestHandler):
+class AirTunesRTPEventHandler(socketserver.StreamRequestHandler):
     def handle(self):
         pass
         # print "RTP Event"
@@ -344,10 +344,10 @@ class AirTunesRTP(object):
         self.cport = cport
         self.tport = tport
 
-        self.dserver = SocketServer.UDPServer(('', 0), AirTunesRTPDataHandler)
-        self.cserver = SocketServer.UDPServer(('', 0), AirTunesRTPControlHandler)
-        self.tserver = SocketServer.UDPServer(('', 0), AirTunesRTPTimingHandler)
-        self.eserver = SocketServer.TCPServer(('', 0), AirTunesRTPEventHandler)
+        self.dserver = socketserver.UDPServer(('', 0), AirTunesRTPDataHandler)
+        self.cserver = socketserver.UDPServer(('', 0), AirTunesRTPControlHandler)
+        self.tserver = socketserver.UDPServer(('', 0), AirTunesRTPTimingHandler)
+        self.eserver = socketserver.TCPServer(('', 0), AirTunesRTPEventHandler)
 
         self.dserver.rtp = self
         self.cserver.rtp = self
@@ -473,11 +473,11 @@ class AirTunesRTSPHandler(BaseHTTPRequestHandler):
         return "AirTunes/120.2"
 
     def setup(self):
-        print "Initialising FairPlay SAP..."
+        print("Initialising FairPlay SAP...")
         st = time.clock()
         self.sap = drm.FairPlaySAP(self.server.parent.airtunesd_filename)
         et = time.clock()
-        print "Done! Took %.2f seconds." % (et-st)
+        print("Done! Took %.2f seconds." % (et-st))
         self.sap_stage = 0
 
         BaseHTTPRequestHandler.setup(self)
@@ -491,11 +491,11 @@ class AirTunesRTSPHandler(BaseHTTPRequestHandler):
             chal_data = self.rfile.read(int(self.headers["Content-Length"]))
             # print "chal", `chal_data`
 
-            print "Calculating AirTunes challenge stage %d..." % self.sap_stage
+            print("Calculating AirTunes challenge stage %d..." % self.sap_stage)
             st = time.clock()
             response = self.sap.challenge(2, chal_data, self.sap_stage)
             et = time.clock()
-            print "Done! Took %.2f seconds." % (et-st)
+            print("Done! Took %.2f seconds." % (et-st))
             self.sap_stage += 1
             # print "resp", `response`
 
@@ -525,11 +525,11 @@ class AirTunesRTSPHandler(BaseHTTPRequestHandler):
 
         iv = sdp.attrs["aesiv"].decode("base64")
 
-        print "Decrypting AirTunes key..."
+        print("Decrypting AirTunes key...")
         st = time.clock()
         key = self.sap.decrypt_key(sdp.attrs["fpaeskey"].decode("base64"))
         et = time.clock()
-        print "Done! Took %.2f seconds. AirTunes key: %s" % (et-st, key.encode("hex"))
+        print("Done! Took %.2f seconds. AirTunes key: %s" % (et-st, key.encode("hex")))
 
         con.rtp = AirTunesRTP(con, self.path, sdp, key, iv)
 
@@ -762,10 +762,10 @@ class AirplayServer(object):
             address=socket.inet_aton(self.local_ip),
             port=port,
             properties={
-                'deviceid': u':'.join(self.device_id),
-                'features': u'0x39f7',
-                'model' : u'AppleTV2,1',
-                'srcvers': u'120.2',
+                'deviceid': ':'.join(self.device_id),
+                'features': '0x39f7',
+                'model' : 'AppleTV2,1',
+                'srcvers': '120.2',
             }
         )
         self.zc.register_service(info)
@@ -778,20 +778,20 @@ class AirplayServer(object):
             address=socket.inet_aton(self.local_ip),
             port=port,
             properties={
-                'txtvers' : u'1',
-                'ch': u'2', #audio channels: stereo
-                'cn': u'0,1,2,3', #audio codecs
-                'da': u'true',
-                'et': u'0,3', #supported encryption types
-                'md': u'0,1,2', #supported metadata types
-                'pw': u'false', #password required
-                'sv': u'false',
-                'sr': u'44100', #audio sample rate: 44100 Hz
-                'ss': u'16', #audio sample size: 16-bit
-                'tp': u'UDP',
-                'vn': u'65537',
-                'vs': u'120.2',
-                'sf': u'0x4',
+                'txtvers' : '1',
+                'ch': '2', #audio channels: stereo
+                'cn': '0,1,2,3', #audio codecs
+                'da': 'true',
+                'et': '0,3', #supported encryption types
+                'md': '0,1,2', #supported metadata types
+                'pw': 'false', #password required
+                'sv': 'false',
+                'sr': '44100', #audio sample rate: 44100 Hz
+                'ss': '16', #audio sample size: 16-bit
+                'tp': 'UDP',
+                'vn': '65537',
+                'vs': '120.2',
+                'sf': '0x4',
             }
         )
         self.zc.register_service(info)
@@ -828,12 +828,12 @@ class AirplayServer(object):
         self.register_airplay(self.airplay_port)
 
 
-        print 'Ready'
+        print('Ready')
 
         try:
             self.airtunes_server.serve_forever()
         finally:
-            for con in self.connections.itervalues():
+            for con in self.connections.values():
                 con.shutdown()
 
             self.airplay_server.shutdown()

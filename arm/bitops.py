@@ -8,8 +8,8 @@
 # Licensed under GPL Version 2 oe later
 #
 
-from utils import *
-import display
+from . import display
+from .utils import *
 
 
 def xor(x, y):
@@ -77,7 +77,7 @@ def not_(x):
 
 def lowest_set_bit(val, len):
     pos = 0
-    for i in xrange(len):
+    for i in range(len):
         if (val & 1 << i):
             return i
     
@@ -86,7 +86,7 @@ def lowest_set_bit(val, len):
 
 def bit_count(val, len):
     count = 0
-    for i in xrange(len):
+    for i in range(len):
         if (val & (1 << i)):
             count += 1
     
@@ -132,7 +132,7 @@ def clear_bits(uint, start, end):
     
     uints = toStringBin32(uint)
     ret = ""
-    for i in xrange(32):
+    for i in range(32):
         if ((32-i-1) <= start and (32-i-1) >= end):
             ret += "0"
         else:
@@ -325,7 +325,7 @@ def ror(value, amount):
 
 def count_leading_zero_bits(val):
     n = 0
-    for i in xrange(31, -1, -1):
+    for i in range(31, -1, -1):
         if (get_bit(val, i)):
             break
         n += 1

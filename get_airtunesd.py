@@ -310,10 +310,14 @@ def download_file(url, out):
 
 def main():
     print "Looking up key..."
-    key_resp = requests.get('https://ipsw.me/keys/AppleTV2,1/9A334v',
+    key_resp = requests.get(
+            'https://ipsw.me/keys/AppleTV2,1/9A334v',
             headers={'User-Agent': 'get_airtunesd.py'},
-            verify=False)
+            auth=('lucag@icsi.berkeley.edu', '-c4cc4cul0-')
+            #verify=False
+    )
     key_html = key_resp.content
+    print(key_html)
     key_soup = BeautifulSoup(key_html)
     key_row = key_soup.find("td", text="RootFileSystem").parent
     key_cell = key_row.find("td", "key")
